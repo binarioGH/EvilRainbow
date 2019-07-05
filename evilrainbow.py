@@ -42,8 +42,28 @@ class EvilRainbow:
 		return 0
 
 
-	def search(self):
-		pass
+	def search(self, hashes, rd, dolog, logname):
+		rd = loads(loadFile(rd))
+		found = []
+		for hsh in hashes:
+			if hsh in rd["hashes"]:
+				found.append("{} : {}".format(hsh, rd["hashes"][hsh]))
+			else:
+				if self.p:
+					print("{} not found.".format(hsh))
+		output = "\n".join(found)
+		if self.p:
+			print(output)
+			print("{} hashes found.".format(len(found)))
+		if dolog:
+			try:
+				with open(logname, "w") as out:
+					out.write(output)
+			except:
+				return -1
+		return 0			
+
+
 
 def printAlgs():
 	print(" , ".join(ALGORITHMS))
@@ -97,7 +117,9 @@ def main():
 		else:
 			hashes = loadFile(o.hashlist, split=True)
 			hashes.append(o.hash)
-		er.search(hashes)
+		er.search(hashes, o.rd, o.log, o.logname)
+	if o.print:
+		print("Done!")
 if __name__ == '__main__':
 	banner()
 	main()
